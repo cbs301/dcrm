@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
 
@@ -29,3 +30,21 @@ def logout_user(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect('login')
+
+
+def register_user(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    form = UserCreationForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.save(commit=False)
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.email = request.POST.get('email', '')
+        user.save()
+        login(request, user)
+        messages.success(request, f'Account created! Welcome, {user.username}.')
+        return redirect('home')
+
+    return render(request, 'register.html', {'form': form})
