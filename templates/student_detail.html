@@ -17,7 +17,11 @@
         <table class="table table-borderless mb-0">
           <tbody>
             <tr>
-              <th class="text-muted" style="width:35%">Email</th>
+              <th class="text-muted" style="width:35%">Student ID</th>
+              <td>{{ student.student_id|default:"—" }}</td>
+            </tr>
+            <tr>
+              <th class="text-muted">Email</th>
               <td>{{ student.email }}</td>
             </tr>
             <tr>
