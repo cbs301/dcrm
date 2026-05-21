@@ -12,6 +12,15 @@ def home(request):
     if not request.user.is_authenticated:
         return render(request, 'landing.html', {})
     query = request.GET.get('q', '').strip()
+    sort = request.GET.get('sort', 'first_name')
+    direction = request.GET.get('dir', 'asc')
+
+    valid_sorts = ['first_name', 'last_name', 'email', 'phone', 'city', 'state', 'created_at']
+    if sort not in valid_sorts:
+        sort = 'first_name'
+    if direction not in ['asc', 'desc']:
+        direction = 'asc'
+
     customers = Customer.objects.all()
     if query:
         customers = customers.filter(
@@ -27,10 +36,28 @@ def home(request):
         ) | customers.filter(
             state__icontains=query
         )
+
+    order_field = f'-{sort}' if direction == 'desc' else sort
+    customers = customers.order_by(order_field)
+
     paginator = Paginator(customers, 25)
     page = request.GET.get('page')
     customers = paginator.get_page(page)
-    return render(request, 'home.html', {'customers': customers, 'query': query})
+    columns = [
+        ('first_name', 'Name'),
+        ('email', 'Email'),
+        ('phone', 'Phone'),
+        ('city', 'City'),
+        ('state', 'State'),
+        ('created_at', 'Created'),
+    ]
+    return render(request, 'home.html', {
+        'customers': customers,
+        'query': query,
+        'sort': sort,
+        'dir': direction,
+        'columns': columns,
+    })
 
 
 def login_user(request):

@@ -25,12 +25,15 @@
       <thead class="table-dark">
         <tr>
           <th>#</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>City</th>
-          <th>State</th>
-          <th>Created</th>
+          {% for field, label in columns %}
+            {% if sort == field %}
+              {% if dir == 'asc' %}<th><a class="text-white text-decoration-none" href="?q={{ query }}&sort={{ field }}&dir=desc">{{ label }} ▲</a></th>
+              {% else %}<th><a class="text-white text-decoration-none" href="?q={{ query }}&sort={{ field }}&dir=asc">{{ label }} ▼</a></th>
+              {% endif %}
+            {% else %}
+              <th><a class="text-white text-decoration-none" href="?q={{ query }}&sort={{ field }}&dir=asc">{{ label }}</a></th>
+            {% endif %}
+          {% endfor %}
         </tr>
       </thead>
       <tbody>
@@ -54,7 +57,7 @@
       <ul class="pagination justify-content-center">
         {% if customers.has_previous %}
           <li class="page-item">
-            <a class="page-link text-dark" href="?q={{ query }}&page={{ customers.previous_page_number }}">&laquo; Prev</a>
+            <a class="page-link text-dark" href="?q={{ query }}&sort={{ sort }}&dir={{ dir }}&page={{ customers.previous_page_number }}">&laquo; Prev</a>
           </li>
         {% else %}
           <li class="page-item disabled"><span class="page-link">&laquo; Prev</span></li>
@@ -64,13 +67,13 @@
           {% if customers.number == num %}
             <li class="page-item active"><span class="page-link bg-dark border-dark">{{ num }}</span></li>
           {% elif num >= customers.number|add:"-2" and num <= customers.number|add:"2" %}
-            <li class="page-item"><a class="page-link text-dark" href="?q={{ query }}&page={{ num }}">{{ num }}</a></li>
+            <li class="page-item"><a class="page-link text-dark" href="?q={{ query }}&sort={{ sort }}&dir={{ dir }}&page={{ num }}">{{ num }}</a></li>
           {% endif %}
         {% endfor %}
 
         {% if customers.has_next %}
           <li class="page-item">
-            <a class="page-link text-dark" href="?q={{ query }}&page={{ customers.next_page_number }}">Next &raquo;</a>
+            <a class="page-link text-dark" href="?q={{ query }}&sort={{ sort }}&dir={{ dir }}&page={{ customers.next_page_number }}">Next &raquo;</a>
           </li>
         {% else %}
           <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
