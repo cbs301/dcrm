@@ -1,10 +1,10 @@
 from django import forms
-from .models import Customer
+from .models import Student
 
 
-class CustomerForm(forms.ModelForm):
+class StudentForm(forms.ModelForm):
     class Meta:
-        model = Customer
+        model = Student
         fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'state', 'zipcode']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),

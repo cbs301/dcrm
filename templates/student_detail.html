@@ -6,10 +6,10 @@
     <div class="card shadow-sm">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h4 class="mb-0">{{ customer.first_name }} {{ customer.last_name }}</h4>
+          <h4 class="mb-0">{{ student.first_name }} {{ student.last_name }}</h4>
           <div class="d-flex gap-2">
-            <a href="{% url 'edit_customer' customer.pk %}" class="btn btn-outline-primary btn-sm">Edit</a>
-            <a href="{% url 'delete_customer' customer.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+            <a href="{% url 'edit_student' student.pk %}" class="btn btn-outline-primary btn-sm">Edit</a>
+            <a href="{% url 'delete_student' student.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
             <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">Back</a>
           </div>
         </div>
@@ -18,31 +18,31 @@
           <tbody>
             <tr>
               <th class="text-muted" style="width:35%">Email</th>
-              <td>{{ customer.email }}</td>
+              <td>{{ student.email }}</td>
             </tr>
             <tr>
               <th class="text-muted">Phone</th>
-              <td>{{ customer.phone|default:"—" }}</td>
+              <td>{{ student.phone|default:"—" }}</td>
             </tr>
             <tr>
               <th class="text-muted">Address</th>
-              <td>{{ customer.address|default:"—" }}</td>
+              <td>{{ student.address|default:"—" }}</td>
             </tr>
             <tr>
               <th class="text-muted">City</th>
-              <td>{{ customer.city|default:"—" }}</td>
+              <td>{{ student.city|default:"—" }}</td>
             </tr>
             <tr>
               <th class="text-muted">State</th>
-              <td>{{ customer.state|default:"—" }}</td>
+              <td>{{ student.state|default:"—" }}</td>
             </tr>
             <tr>
               <th class="text-muted">Zip Code</th>
-              <td>{{ customer.zipcode|default:"—" }}</td>
+              <td>{{ student.zipcode|default:"—" }}</td>
             </tr>
             <tr>
               <th class="text-muted">Created</th>
-              <td>{{ customer.created_at|date:"M d, Y" }}</td>
+              <td>{{ student.created_at|date:"M d, Y" }}</td>
             </tr>
           </tbody>
         </table>

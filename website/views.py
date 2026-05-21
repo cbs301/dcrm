@@ -4,13 +4,14 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .models import Customer
-from .forms import CustomerForm
+from .models import Student
+from .forms import StudentForm
 
 
 def home(request):
     if not request.user.is_authenticated:
         return render(request, 'landing.html', {})
+
     query = request.GET.get('q', '').strip()
     sort = request.GET.get('sort', 'first_name')
     direction = request.GET.get('dir', 'asc')
@@ -21,28 +22,29 @@ def home(request):
     if direction not in ['asc', 'desc']:
         direction = 'asc'
 
-    customers = Customer.objects.all()
+    students = Student.objects.all()
     if query:
-        customers = customers.filter(
+        students = students.filter(
             first_name__icontains=query
-        ) | customers.filter(
+        ) | students.filter(
             last_name__icontains=query
-        ) | customers.filter(
+        ) | students.filter(
             email__icontains=query
-        ) | customers.filter(
+        ) | students.filter(
             phone__icontains=query
-        ) | customers.filter(
+        ) | students.filter(
             city__icontains=query
-        ) | customers.filter(
+        ) | students.filter(
             state__icontains=query
         )
 
     order_field = f'-{sort}' if direction == 'desc' else sort
-    customers = customers.order_by(order_field)
+    students = students.order_by(order_field)
 
-    paginator = Paginator(customers, 25)
+    paginator = Paginator(students, 25)
     page = request.GET.get('page')
-    customers = paginator.get_page(page)
+    students = paginator.get_page(page)
+
     columns = [
         ('first_name', 'Name'),
         ('email', 'Email'),
@@ -52,7 +54,7 @@ def home(request):
         ('created_at', 'Created'),
     ]
     return render(request, 'home.html', {
-        'customers': customers,
+        'students': students,
         'query': query,
         'sort': sort,
         'dir': direction,
@@ -79,40 +81,40 @@ def login_user(request):
 
 
 @login_required
-def customer_detail(request, pk):
-    customer = get_object_or_404(Customer, pk=pk)
-    return render(request, 'customer_detail.html', {'customer': customer})
+def student_detail(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    return render(request, 'student_detail.html', {'student': student})
 
 
 @login_required
-def edit_customer(request, pk):
-    customer = get_object_or_404(Customer, pk=pk)
-    form = CustomerForm(request.POST or None, instance=customer)
+def edit_student(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    form = StudentForm(request.POST or None, instance=student)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Customer updated successfully.')
-        return redirect('customer_detail', pk=pk)
-    return render(request, 'edit_customer.html', {'form': form, 'customer': customer})
+        messages.success(request, 'Student updated successfully.')
+        return redirect('student_detail', pk=pk)
+    return render(request, 'edit_student.html', {'form': form, 'student': student})
 
 
 @login_required
-def delete_customer(request, pk):
-    customer = get_object_or_404(Customer, pk=pk)
+def delete_student(request, pk):
+    student = get_object_or_404(Student, pk=pk)
     if request.method == 'POST':
-        customer.delete()
-        messages.success(request, 'Customer deleted.')
+        student.delete()
+        messages.success(request, 'Student deleted.')
         return redirect('home')
-    return render(request, 'delete_customer.html', {'customer': customer})
+    return render(request, 'delete_student.html', {'student': student})
 
 
 @login_required
-def add_customer(request):
-    form = CustomerForm(request.POST or None)
+def add_student(request):
+    form = StudentForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Customer added successfully.')
+        messages.success(request, 'Student added successfully.')
         return redirect('home')
-    return render(request, 'add_customer.html', {'form': form})
+    return render(request, 'add_student.html', {'form': form})
 
 
 def logout_user(request):
