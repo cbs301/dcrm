@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -27,6 +27,11 @@ def login_user(request):
             messages.error(request, 'Invalid username or password.')
 
     return render(request, 'login.html', {})
+
+
+def customer_detail(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    return render(request, 'customer_detail.html', {'customer': customer})
 
 
 def add_customer(request):

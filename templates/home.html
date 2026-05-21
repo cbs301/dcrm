@@ -23,7 +23,7 @@
       </thead>
       <tbody>
         {% for customer in customers %}
-          <tr>
+          <tr style="cursor:pointer;" onclick="window.location='{% url 'customer_detail' customer.pk %}'">
             <td>{{ customer.id }}</td>
             <td>{{ customer.first_name }} {{ customer.last_name }}</td>
             <td>{{ customer.email }}</td>
