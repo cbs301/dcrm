@@ -10,8 +10,23 @@ from .forms import CustomerForm
 def home(request):
     if not request.user.is_authenticated:
         return render(request, 'landing.html', {})
+    query = request.GET.get('q', '').strip()
     customers = Customer.objects.all()
-    return render(request, 'home.html', {'customers': customers})
+    if query:
+        customers = customers.filter(
+            first_name__icontains=query
+        ) | customers.filter(
+            last_name__icontains=query
+        ) | customers.filter(
+            email__icontains=query
+        ) | customers.filter(
+            phone__icontains=query
+        ) | customers.filter(
+            city__icontains=query
+        ) | customers.filter(
+            state__icontains=query
+        )
+    return render(request, 'home.html', {'customers': customers, 'query': query})
 
 
 def login_user(request):
