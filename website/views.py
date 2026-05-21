@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Customer
 from .forms import CustomerForm
 
 
 def home(request):
+    if not request.user.is_authenticated:
+        return render(request, 'landing.html', {})
     customers = Customer.objects.all()
     return render(request, 'home.html', {'customers': customers})
 
@@ -29,11 +32,13 @@ def login_user(request):
     return render(request, 'login.html', {})
 
 
+@login_required
 def customer_detail(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     return render(request, 'customer_detail.html', {'customer': customer})
 
 
+@login_required
 def edit_customer(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     form = CustomerForm(request.POST or None, instance=customer)
@@ -44,6 +49,7 @@ def edit_customer(request, pk):
     return render(request, 'edit_customer.html', {'form': form, 'customer': customer})
 
 
+@login_required
 def delete_customer(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     if request.method == 'POST':
@@ -53,6 +59,7 @@ def delete_customer(request, pk):
     return render(request, 'delete_customer.html', {'customer': customer})
 
 
+@login_required
 def add_customer(request):
     form = CustomerForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
