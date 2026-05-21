@@ -48,6 +48,37 @@
       </tbody>
     </table>
   </div>
+
+  {% if customers.paginator.num_pages > 1 %}
+    <nav>
+      <ul class="pagination justify-content-center">
+        {% if customers.has_previous %}
+          <li class="page-item">
+            <a class="page-link text-dark" href="?q={{ query }}&page={{ customers.previous_page_number }}">&laquo; Prev</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">&laquo; Prev</span></li>
+        {% endif %}
+
+        {% for num in customers.paginator.page_range %}
+          {% if customers.number == num %}
+            <li class="page-item active"><span class="page-link bg-dark border-dark">{{ num }}</span></li>
+          {% elif num >= customers.number|add:"-2" and num <= customers.number|add:"2" %}
+            <li class="page-item"><a class="page-link text-dark" href="?q={{ query }}&page={{ num }}">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if customers.has_next %}
+          <li class="page-item">
+            <a class="page-link text-dark" href="?q={{ query }}&page={{ customers.next_page_number }}">Next &raquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
 {% else %}
   <div class="alert alert-info">No customers yet.</div>
 {% endif %}

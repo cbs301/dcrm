@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 from .models import Customer
 from .forms import CustomerForm
 
@@ -26,6 +27,9 @@ def home(request):
         ) | customers.filter(
             state__icontains=query
         )
+    paginator = Paginator(customers, 25)
+    page = request.GET.get('page')
+    customers = paginator.get_page(page)
     return render(request, 'home.html', {'customers': customers, 'query': query})
 
 
