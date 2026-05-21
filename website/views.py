@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import Customer
+from .forms import CustomerForm
 
 
 def home(request):
@@ -26,6 +27,15 @@ def login_user(request):
             messages.error(request, 'Invalid username or password.')
 
     return render(request, 'login.html', {})
+
+
+def add_customer(request):
+    form = CustomerForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Customer added successfully.')
+        return redirect('home')
+    return render(request, 'add_customer.html', {'form': form})
 
 
 def logout_user(request):
