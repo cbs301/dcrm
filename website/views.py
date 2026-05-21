@@ -4,8 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .models import Student
-from .forms import StudentForm
+from .models import Student, Grade
+from .forms import StudentForm, GradeForm
 
 
 def home(request):
@@ -83,7 +83,43 @@ def login_user(request):
 @login_required
 def student_detail(request, pk):
     student = get_object_or_404(Student, pk=pk)
-    return render(request, 'student_detail.html', {'student': student})
+    grades = student.grades.order_by('semester', 'course')
+    return render(request, 'student_detail.html', {'student': student, 'grades': grades})
+
+
+@login_required
+def add_grade(request, student_pk):
+    student = get_object_or_404(Student, pk=student_pk)
+    form = GradeForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        grade = form.save(commit=False)
+        grade.student = student
+        grade.save()
+        messages.success(request, 'Grade added.')
+        return redirect('student_detail', pk=student_pk)
+    return render(request, 'add_grade.html', {'form': form, 'student': student})
+
+
+@login_required
+def edit_grade(request, pk):
+    grade = get_object_or_404(Grade, pk=pk)
+    form = GradeForm(request.POST or None, instance=grade)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Grade updated.')
+        return redirect('student_detail', pk=grade.student.pk)
+    return render(request, 'edit_grade.html', {'form': form, 'grade': grade})
+
+
+@login_required
+def delete_grade(request, pk):
+    grade = get_object_or_404(Grade, pk=pk)
+    student_pk = grade.student.pk
+    if request.method == 'POST':
+        grade.delete()
+        messages.success(request, 'Grade deleted.')
+        return redirect('student_detail', pk=student_pk)
+    return render(request, 'delete_grade.html', {'grade': grade})
 
 
 @login_required

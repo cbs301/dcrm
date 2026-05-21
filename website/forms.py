@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student
+from .models import Student, Grade
 
 
 class StudentForm(forms.ModelForm):
@@ -16,4 +16,16 @@ class StudentForm(forms.ModelForm):
             'city': forms.TextInput(attrs={'class': 'form-control'}),
             'state': forms.TextInput(attrs={'class': 'form-control'}),
             'zipcode': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class GradeForm(forms.ModelForm):
+    class Meta:
+        model = Grade
+        fields = ['course', 'grade', 'semester', 'notes']
+        widgets = {
+            'course': forms.TextInput(attrs={'class': 'form-control'}),
+            'grade': forms.TextInput(attrs={'class': 'form-control'}),
+            'semester': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Fall 2025'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }

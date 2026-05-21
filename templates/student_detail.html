@@ -55,4 +55,49 @@
     </div>
   </div>
 </div>
+
+<!-- Grades -->
+<div class="row justify-content-center mt-4">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Grades <span class="badge bg-secondary">{{ grades.count }}</span></h5>
+          <a href="{% url 'add_grade' student.pk %}" class="btn btn-dark btn-sm">+ Add Grade</a>
+        </div>
+
+        {% if grades %}
+          <table class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th>Course</th>
+                <th>Grade</th>
+                <th>Semester</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for g in grades %}
+                <tr>
+                  <td>{{ g.course }}</td>
+                  <td><span class="badge bg-secondary fs-6">{{ g.grade }}</span></td>
+                  <td>{{ g.semester }}</td>
+                  <td class="text-muted">{{ g.notes|default:"—" }}</td>
+                  <td class="text-end">
+                    <a href="{% url 'edit_grade' g.pk %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                    <a href="{% url 'delete_grade' g.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="alert alert-info mb-0">No grades recorded yet.</div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
