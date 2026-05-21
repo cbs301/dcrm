@@ -34,6 +34,25 @@ def customer_detail(request, pk):
     return render(request, 'customer_detail.html', {'customer': customer})
 
 
+def edit_customer(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    form = CustomerForm(request.POST or None, instance=customer)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Customer updated successfully.')
+        return redirect('customer_detail', pk=pk)
+    return render(request, 'edit_customer.html', {'form': form, 'customer': customer})
+
+
+def delete_customer(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    if request.method == 'POST':
+        customer.delete()
+        messages.success(request, 'Customer deleted.')
+        return redirect('home')
+    return render(request, 'delete_customer.html', {'customer': customer})
+
+
 def add_customer(request):
     form = CustomerForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
